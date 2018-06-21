@@ -89,6 +89,10 @@ public final class Encoders {
      */
     public static final String XML_COMMENT = "xml-comment";
     /**
+     * Name of {@linkplain Encode#forKml(String) KML} context.
+     */
+    public static final String KML = "kml";
+    /**
      * Name of {@linkplain Encode#forCDATA(String) CDATA} context.
      */
     public static final String CDATA = "cdata";
@@ -160,6 +164,11 @@ public final class Encoders {
      */
     static final XMLCommentEncoder XML_COMMENT_ENCODER
             = map(XML_COMMENT, new XMLCommentEncoder());
+    /**
+     * Encoder for KML contexts.
+     */
+    static final KMLEncoder KML_ENCODER
+            = map(KML, new KMLEncoder());
     /**
      * Encoder for CDATA contexts.
      */
