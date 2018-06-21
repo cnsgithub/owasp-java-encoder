@@ -862,6 +862,30 @@ public final class Encode {
     }
 
     /**
+     * Encoder for KML.
+     *
+     * @param input the input to encode
+     * @return the encoded result
+     */
+    public static String forKml(String input) {
+        return encode(Encoders.KML_ENCODER, input);
+    }
+
+    /**
+     * See {@link #forKml(String)} for description of encoding.  This
+     * version writes directly to a Writer without an intervening string.
+     *
+     * @param out where to write encoded output
+     * @param input the input string to encode
+     * @throws IOException if thrown by writer
+     */
+    public static void forKml(Writer out, String input)
+            throws IOException
+    {
+        encode(Encoders.KML_ENCODER, out, input);
+    }
+    
+    /**
      * Encodes data for an XML CDATA section.  On the chance that the input
      * contains a terminating {@code "]]>"}, it will be replaced by
      * {@code "]]>]]<![CDATA[>"}.
