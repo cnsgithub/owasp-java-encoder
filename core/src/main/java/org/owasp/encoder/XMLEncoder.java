@@ -75,15 +75,15 @@ class XMLEncoder extends Encoder {
     /**
      * The encoded length of an ampersand.
      */
-    static final int AMP_LENGTH = 5;
+    static final int AMP_LENGTH = 5, AMP_NUMERIC_LENGTH = 5;
     /**
      * The encoded length of a less-than sign.
      */
-    static final int LT_LENGTH = 4;
+    static final int LT_LENGTH = 4, LT_NUMERIC_LENGTH = 5;
     /**
      * The encoded length of a greater-than sign.
      */
-    static final int GT_LENGTH = 4;
+    static final int GT_LENGTH = 4, GT_NUMERIC_LENGTH = 5;
     /**
      * The encoded length of an apostrophe.
      */
@@ -245,6 +245,10 @@ class XMLEncoder extends Encoder {
      * {@inheritDoc}
      */
     protected CoderResult encodeArrays(CharBuffer input, CharBuffer output, boolean endOfInput) {
+        return encodeArrays(input, output, endOfInput, false);
+    }
+
+    protected CoderResult encodeArrays(CharBuffer input, CharBuffer output, boolean endOfInput, boolean avoidEntityReferences) {
         final char[] in = input.array();
         final char[] out = output.array();
         int i = input.arrayOffset() + input.position();
@@ -264,6 +268,17 @@ class XMLEncoder extends Encoder {
                 } else {
                     switch (ch) {
                         case '&':
+                            if (avoidEntityReferences) {
+                                if (j + AMP_NUMERIC_LENGTH > m) {
+                                    return overflow(input, i, output, j);
+                                }
+                                out[j++] = '&';
+                                out[j++] = '#';
+                                out[j++] = '3';
+                                out[j++] = '8';
+                                out[j++] = ';';
+                                break;
+                            }
                             if (j + AMP_LENGTH > m) {
                                 return overflow(input, i, output, j);
                             }
@@ -274,6 +289,17 @@ class XMLEncoder extends Encoder {
                             out[j++] = ';';
                             break;
                         case '<':
+                            if (avoidEntityReferences) {
+                                if (j + LT_NUMERIC_LENGTH > m) {
+                                    return overflow(input, i, output, j);
+                                }
+                                out[j++] = '&';
+                                out[j++] = '#';
+                                out[j++] = '6';
+                                out[j++] = '0';
+                                out[j++] = ';';
+                                break;                                
+                            }
                             if (j + LT_LENGTH > m) {
                                 return overflow(input, i, output, j);
                             }
@@ -283,6 +309,18 @@ class XMLEncoder extends Encoder {
                             out[j++] = ';';
                             break;
                         case '>':
+                            if (avoidEntityReferences) {
+                                if (j + GT_NUMERIC_LENGTH > m) {
+                                    return overflow(input, i, output, j);
+                                }
+                                out[j++] = '&';
+                                out[j++] = '#';
+                                out[j++] = '6';
+                                out[j++] = '2';
+                                out[j++] = ';';
+                                break;
+                                
+                            }
                             if (j + GT_LENGTH > m) {
                                 return overflow(input, i, output, j);
                             }
